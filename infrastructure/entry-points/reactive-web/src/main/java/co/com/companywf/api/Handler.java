@@ -1,5 +1,8 @@
 package co.com.companywf.api;
 
+import co.com.companywf.model.videogame.Videogame;
+import co.com.companywf.usecase.getallvideogames.GetAllVideoGamesUseCase;
+import co.com.companywf.usecase.getvideogamebyid.GetVideoGameByIdUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -9,12 +12,14 @@ import reactor.core.publisher.Mono;
 @Component
 @RequiredArgsConstructor
 public class Handler {
-//private  final UseCase useCase;
-//private  final UseCase2 useCase2;
+private  final GetAllVideoGamesUseCase getAllVideoGamesUseCase;
+private  final GetVideoGameByIdUseCase getVideoGameByIdUseCase;
 
-    public Mono<ServerResponse> listenGETUseCase(ServerRequest serverRequest) {
-        // useCase.logic();
-        return ServerResponse.ok().bodyValue("hello from spring!!!");
+    public Mono<ServerResponse> listenAllVideoGames(ServerRequest serverRequest) {
+        return getAllVideoGamesUseCase.execute()
+                .collectList()
+                .flatMap(videogame -> ServerResponse.ok().bodyValue(videogame));
+//        return ServerResponse.ok().body(getAllVideoGamesUseCase.execute(), Videogame.class);
     }
 
     public Mono<ServerResponse> listenGETOtherUseCase(ServerRequest serverRequest) {

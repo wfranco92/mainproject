@@ -1,0 +1,36 @@
+package co.com.companywf.jpa.entity;
+
+import jakarta.persistence.*;
+import lombok.Data;
+
+import java.time.LocalDateTime;
+
+@Data
+@Entity
+@Table(name = "videogame")
+public class VideoGameEntity {
+    @Id
+    @Column(name = "videogame_id")
+    private String videogameId;
+
+    private String name;
+
+    @ManyToOne
+    @JoinColumn(name = "gender_id", nullable = false)
+    private GenderEntity gender;
+
+    @ManyToOne
+    @JoinColumn(name = "state_id", nullable = false)
+    private StatusEntity status;
+
+    @ManyToOne
+    @JoinColumn(name = "developer_id", nullable = false)
+    private DeveloperEntity developer;
+
+    @ManyToOne
+    @JoinColumn(name = "location_id", nullable = false)
+    private LocationEntity location;
+
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+}
