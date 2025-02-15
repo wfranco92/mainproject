@@ -1,12 +1,18 @@
 package co.com.companywf.jpa.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Data
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
+@ToString
+@Builder(toBuilder = true)
 @Table(name = "videogame")
 public class VideoGameEntity {
     @Id
@@ -33,4 +39,16 @@ public class VideoGameEntity {
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
+
+    @PrePersist
+    public void prePersist(){
+        System.out.println("Fecha de creacion de registro");
+        this.createdAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void preUpdate(){
+        System.out.println("Fecha de actualizacion de registro");
+        this.createdAt = LocalDateTime.now();
+    }
 }

@@ -15,6 +15,7 @@ public class RouterRest {
     public RouterFunction<ServerResponse> routerFunction(Handler handler) {
         return route(GET("/api/v1/videogame"), handler::listenAllVideoGames)
                 .andRoute(GET("/api/v1/videogame/{id}"), handler::listenPOSTUseCase)
-                .andRoute(POST("/api/otherusercase/path"), handler::listenGETOtherUseCase);
+                .andRoute(POST("/api/v1/videogame"), handler::listenSaveVideoGame)
+                .andRoute(POST("/api/v1/Gender"), handler::listenSaveGender);
     }
 }

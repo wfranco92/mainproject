@@ -13,8 +13,8 @@ spring:
     include: null
   datasource:
     url: "jdbc:mysql://localhost:3306/videogame"
-    username: "root"
-    password: "sofia2215"
+    username: ${userName}
+    password: ${password}
     driverClassName: "com.mysql.cj.jdbc.Driver"
   jpa:
     databasePlatform: "org.hibernate.dialect.MySQL8Dialect"
