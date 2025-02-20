@@ -3,7 +3,7 @@ package co.com.companywf.model.database;
 import co.com.companywf.model.videogame.Developer;
 import co.com.companywf.model.gender.Gender;
 import co.com.companywf.model.videogame.Location;
-import co.com.companywf.model.videogame.Status;
+import co.com.companywf.model.status.Status;
 import lombok.*;
 
 import java.time.LocalDateTime;

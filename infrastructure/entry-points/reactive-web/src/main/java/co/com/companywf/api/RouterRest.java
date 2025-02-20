@@ -18,6 +18,12 @@ public class RouterRest {
                 .andRoute(POST("/api/v1/videogame"), handler::listenSaveVideoGame)
                 .andRoute(POST("/api/v1/gender"), handler::listenSaveGender)
                 .andRoute(GET("/api/v1/gender/{id}"), handler::listenGetGenderById)
-                .andRoute(GET("/api/v1/gender"), handler::listenGetAllGender);
+                .andRoute(GET("/api/v1/gender"), handler::listenGetAllGender)
+                .andRoute(POST("/api/v1/status"), handler::listenSaveStatus)
+                .andRoute(GET("/api/v1/status/{id}"), handler::listenGetStatusById)
+                .andRoute(GET("/api/v1/status"), handler::listenGetAllStatus)
+                .andRoute(POST("/api/v1/developer"), handler::listenSaveStatus)
+                .andRoute(GET("/api/v1/developer/{id}"), handler::listenGetStatusById)
+                .andRoute(GET("/api/v1/developer"), handler::listenGetAllStatus);
     }
 }

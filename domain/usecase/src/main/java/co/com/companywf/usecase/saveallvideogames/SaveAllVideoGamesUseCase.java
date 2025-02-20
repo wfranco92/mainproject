@@ -6,6 +6,7 @@ import co.com.companywf.model.enums.Gender;
 import co.com.companywf.model.enums.Location;
 import co.com.companywf.model.enums.Status;
 import co.com.companywf.model.gender.gateway.GenderRepository;
+import co.com.companywf.model.status.gateway.StatusRepository;
 import co.com.companywf.model.videogame.VideoGameRequest;
 import co.com.companywf.model.videogame.Videogame;
 import co.com.companywf.model.videogame.gateways.*;
