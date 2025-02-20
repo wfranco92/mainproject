@@ -8,6 +8,7 @@ import co.com.companywf.model.videogame.gateways.VideogameRepository;
 import org.reactivecommons.utils.ObjectMapper;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -43,6 +44,12 @@ public class JPAVideoGameRepositoryAdapter extends AdapterOperations<Videogame, 
                 .collectList()
                 .map(repository::saveAll)
                 .flatMapMany(Flux::fromIterable)
+                .map(videoGameEntity -> mapper.map(videoGameEntity, Videogame.class));
+    }
+
+    @Override
+    public Mono<Videogame> getVideoGameById(String id) {
+        return Mono.justOrEmpty(repository.findById(id))
                 .map(videoGameEntity -> mapper.map(videoGameEntity, Videogame.class));
     }
 }

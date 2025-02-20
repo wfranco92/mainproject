@@ -14,8 +14,10 @@ public class RouterRest {
     @Bean
     public RouterFunction<ServerResponse> routerFunction(Handler handler) {
         return route(GET("/api/v1/videogame"), handler::listenAllVideoGames)
-                .andRoute(GET("/api/v1/videogame/{id}"), handler::listenPOSTUseCase)
+                .andRoute(GET("/api/v1/videogame/{id}"), handler::listenGetVideoGameById)
                 .andRoute(POST("/api/v1/videogame"), handler::listenSaveVideoGame)
-                .andRoute(POST("/api/v1/Gender"), handler::listenSaveGender);
+                .andRoute(POST("/api/v1/gender"), handler::listenSaveGender)
+                .andRoute(GET("/api/v1/gender/{id}"), handler::listenGetGenderById)
+                .andRoute(GET("/api/v1/gender"), handler::listenGetAllGender);
     }
 }
