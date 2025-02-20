@@ -3,20 +3,24 @@ package co.com.companywf.api;
 import co.com.companywf.api.dto.*;
 import co.com.companywf.model.developer.DeveloperRequest;
 import co.com.companywf.model.gender.GenderRequest;
+import co.com.companywf.model.location.LocationRequest;
 import co.com.companywf.model.status.Status;
 import co.com.companywf.model.status.StatusRequest;
 import co.com.companywf.model.videogame.VideoGameRequest;
 import co.com.companywf.usecase.getalldeveloper.GetAllDeveloperUseCase;
 import co.com.companywf.usecase.getallgender.GetAllGenderUseCase;
+import co.com.companywf.usecase.getalllocation.GetAllLocationUseCase;
 import co.com.companywf.usecase.getallstatus.GetAllStatusUseCase;
 import co.com.companywf.usecase.getallvideogames.GetAllVideoGamesUseCase;
 import co.com.companywf.usecase.getdeveloperbyid.GetDeveloperByIdUseCase;
 import co.com.companywf.usecase.getgenderbyid.GetGenderByIdUseCase;
+import co.com.companywf.usecase.getlocationbyid.GetLocationByIdUseCase;
 import co.com.companywf.usecase.getstatusbyid.GetStatusByIdUseCase;
 import co.com.companywf.usecase.getvideogamebyid.GetVideoGameByIdUseCase;
 import co.com.companywf.usecase.saveallvideogames.SaveAllVideoGamesUseCase;
 import co.com.companywf.usecase.savedeveloper.SaveDeveloperUseCase;
 import co.com.companywf.usecase.savegender.SaveGenderUseCase;
+import co.com.companywf.usecase.savelocation.SaveLocationUseCase;
 import co.com.companywf.usecase.savestatus.SaveStatusUseCase;
 import lombok.RequiredArgsConstructor;
 import org.reactivecommons.utils.ObjectMapper;
@@ -41,6 +45,9 @@ private final GetStatusByIdUseCase getStatusByIdUseCase;
 private final SaveDeveloperUseCase saveDeveloperUseCase;
 private final GetAllDeveloperUseCase getAllDeveloperUseCase;
 private final GetDeveloperByIdUseCase getDeveloperByIdUseCase;
+private final GetLocationByIdUseCase getLocationByIdUseCase;
+private final GetAllLocationUseCase getAllLocationUseCase;
+private final SaveLocationUseCase saveLocationUseCase;
 
 private final ObjectMapper mapper;
 
@@ -119,5 +126,23 @@ private final ObjectMapper mapper;
         return getAllDeveloperUseCase.execute()
                 .collectList()
                 .flatMap(developers -> ServerResponse.ok().bodyValue(developers));
+    }
+
+    public Mono<ServerResponse> listenSaveLocation(ServerRequest serverRequest) {
+        return serverRequest.bodyToMono(LocationRequestDTO.class)
+                .map(locationRequestDTO -> mapper.map(locationRequestDTO, LocationRequest.class))
+                .flatMap(saveLocationUseCase::execute)
+                .flatMap(location -> ServerResponse.ok().bodyValue(location));
+    }
+
+    public Mono<ServerResponse> listenGetLocationById(ServerRequest serverRequest) {
+        return getLocationByIdUseCase.execute(serverRequest.pathVariable("id"))
+                .flatMap(location -> ServerResponse.ok().bodyValue(location));
+    }
+
+    public Mono<ServerResponse> listenGetAllLocation(ServerRequest serverRequest) {
+        return getAllLocationUseCase.execute()
+                .collectList()
+                .flatMap(location -> ServerResponse.ok().bodyValue(location));
     }
 }

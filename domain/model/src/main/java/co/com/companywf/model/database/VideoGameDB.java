@@ -2,7 +2,7 @@ package co.com.companywf.model.database;
 
 import co.com.companywf.model.developer.Developer;
 import co.com.companywf.model.gender.Gender;
-import co.com.companywf.model.videogame.Location;
+import co.com.companywf.model.location.Location;
 import co.com.companywf.model.status.Status;
 import lombok.*;
 

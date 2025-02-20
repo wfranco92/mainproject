@@ -2,10 +2,12 @@ package co.com.companywf.jpa;
 
 import co.com.companywf.jpa.entity.LocationEntity;
 import co.com.companywf.jpa.helper.AdapterOperations;
-import co.com.companywf.model.videogame.Location;
-import co.com.companywf.model.videogame.gateways.LocationRepository;
+import co.com.companywf.model.location.Location;
+import co.com.companywf.model.location.LocationRequest;
+import co.com.companywf.model.location.gateways.LocationRepository;
 import org.reactivecommons.utils.ObjectMapper;
 import org.springframework.stereotype.Repository;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Repository
@@ -25,5 +27,19 @@ public class JPALocationRepositoryAdapter extends AdapterOperations<Location, Lo
     public Mono<Location> getLocationById(String id) {
         return Mono.justOrEmpty(repository.findById(id)
                 .map(locationEntity -> mapper.map(locationEntity, Location.class)));
+    }
+
+    @Override
+    public Mono<Location> saveLocation(LocationRequest locationRequest) {
+        return Mono.justOrEmpty(locationRequest)
+                .map(locationRequest1 -> mapper.map(locationRequest1, LocationEntity.class))
+                .map(repository::save)
+                .map(locationEntity -> mapper.map(locationEntity, Location.class));
+    }
+
+    @Override
+    public Flux<Location> getAllLocation() {
+        return Flux.fromIterable(repository.findAll())
+                .map(locationEntity -> mapper.map(locationEntity, Location.class));
     }
 }

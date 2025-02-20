@@ -1,9 +1,6 @@
 package co.com.companywf.jpa.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -19,4 +16,16 @@ public class LocationEntity {
     private String name;
     @Column(name = "created_at")
     private LocalDateTime createdAt;
+
+    @PrePersist
+    public void prePersist(){
+        System.out.println("Fecha de creacion de registro location");
+        this.createdAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void preUpdate(){
+        System.out.println("Fecha de actualizacion de registro status");
+        this.createdAt = LocalDateTime.now();
+    }
 }

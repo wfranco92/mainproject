@@ -24,6 +24,9 @@ public class RouterRest {
                 .andRoute(GET("/api/v1/status"), handler::listenGetAllStatus)
                 .andRoute(POST("/api/v1/developer"), handler::listenSaveDeveloper)
                 .andRoute(GET("/api/v1/developer/{id}"), handler::listenGetDeveloperById)
-                .andRoute(GET("/api/v1/developer"), handler::listenGetAllDeveloper);
+                .andRoute(GET("/api/v1/developer"), handler::listenGetAllDeveloper)
+                .andRoute(POST("/api/v1/location"), handler::listenSaveLocation)
+                .andRoute(GET("/api/v1/location/{id}"), handler::listenGetLocationById)
+                .andRoute(GET("/api/v1/location"), handler::listenGetAllLocation);
     }
 }
