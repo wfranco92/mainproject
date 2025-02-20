@@ -1,6 +1,7 @@
 package co.com.companywf.usecase.saveallvideogames;
 
 import co.com.companywf.model.database.VideoGameDB;
+import co.com.companywf.model.developer.gateways.DeveloperRepository;
 import co.com.companywf.model.enums.Developer;
 import co.com.companywf.model.enums.Gender;
 import co.com.companywf.model.enums.Location;

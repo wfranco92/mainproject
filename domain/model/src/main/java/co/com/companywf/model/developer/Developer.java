@@ -1,4 +1,4 @@
-package co.com.companywf.model.videogame;
+package co.com.companywf.model.developer;
 
 import lombok.*;
 
