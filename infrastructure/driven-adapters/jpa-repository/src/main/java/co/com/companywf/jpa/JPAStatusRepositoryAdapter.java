@@ -30,6 +30,14 @@ public class JPAStatusRepositoryAdapter extends AdapterOperations<Status, Status
     }
 
     @Override
+    public Mono<Status> updateStatus(String id, StatusRequest statusRequest) {
+        return Mono.justOrEmpty(repository.findById(id))
+                .map(statusEntity -> statusEntity.toBuilder().description(statusRequest.getDescription()).build())
+                .map(repository::save)
+                .map(statusEntity -> mapper.map(statusEntity, Status.class));
+    }
+
+    @Override
     public Mono<Status> saveStatus(StatusRequest request) {
         return Mono.justOrEmpty(request)
                 .map(request1 -> mapper.map(request1, StatusEntity.class))

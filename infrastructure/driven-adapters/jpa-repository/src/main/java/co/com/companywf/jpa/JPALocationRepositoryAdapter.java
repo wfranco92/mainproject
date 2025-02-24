@@ -38,6 +38,14 @@ public class JPALocationRepositoryAdapter extends AdapterOperations<Location, Lo
     }
 
     @Override
+    public Mono<Location> updateLocation(String id, LocationRequest locationRequest) {
+        return Mono.justOrEmpty(repository.findById(id))
+                .map(locationEntity -> locationEntity.toBuilder().name(locationRequest.getName()).build())
+                .map(repository::save)
+                .map(locationEntity -> mapper.map(locationEntity, Location.class));
+    }
+
+    @Override
     public Flux<Location> getAllLocation() {
         return Flux.fromIterable(repository.findAll())
                 .map(locationEntity -> mapper.map(locationEntity, Location.class));

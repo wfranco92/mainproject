@@ -22,6 +22,11 @@ import co.com.companywf.usecase.savedeveloper.SaveDeveloperUseCase;
 import co.com.companywf.usecase.savegender.SaveGenderUseCase;
 import co.com.companywf.usecase.savelocation.SaveLocationUseCase;
 import co.com.companywf.usecase.savestatus.SaveStatusUseCase;
+import co.com.companywf.usecase.updatedeveloper.UpdateDeveloperUseCase;
+import co.com.companywf.usecase.updategender.UpdateGenderUseCase;
+import co.com.companywf.usecase.updatelocation.UpdateLocationUseCase;
+import co.com.companywf.usecase.updatestatus.UpdateStatusUseCase;
+import co.com.companywf.usecase.updatevideogame.UpdateVideoGameUseCase;
 import lombok.RequiredArgsConstructor;
 import org.reactivecommons.utils.ObjectMapper;
 import org.springframework.stereotype.Component;
@@ -29,27 +34,34 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
+import java.util.Objects;
+
 @Component
 @RequiredArgsConstructor
 public class Handler {
 
-private final GetAllVideoGamesUseCase getAllVideoGamesUseCase;
-private final GetVideoGameByIdUseCase getVideoGameByIdUseCase;
-private final SaveAllVideoGamesUseCase saveAllVideoGamesUseCase;
-private final SaveGenderUseCase saveGenderUseCase;
-private final GetGenderByIdUseCase getGenderByIdUseCase;
-private final GetAllGenderUseCase getAllGenderUseCase;
-private final SaveStatusUseCase saveStatusUseCase;
-private final GetAllStatusUseCase getAllStatusUseCase;
-private final GetStatusByIdUseCase getStatusByIdUseCase;
-private final SaveDeveloperUseCase saveDeveloperUseCase;
-private final GetAllDeveloperUseCase getAllDeveloperUseCase;
-private final GetDeveloperByIdUseCase getDeveloperByIdUseCase;
-private final GetLocationByIdUseCase getLocationByIdUseCase;
-private final GetAllLocationUseCase getAllLocationUseCase;
-private final SaveLocationUseCase saveLocationUseCase;
+    private final GetAllVideoGamesUseCase getAllVideoGamesUseCase;
+    private final GetVideoGameByIdUseCase getVideoGameByIdUseCase;
+    private final SaveAllVideoGamesUseCase saveAllVideoGamesUseCase;
+    private final SaveGenderUseCase saveGenderUseCase;
+    private final GetGenderByIdUseCase getGenderByIdUseCase;
+    private final GetAllGenderUseCase getAllGenderUseCase;
+    private final SaveStatusUseCase saveStatusUseCase;
+    private final GetAllStatusUseCase getAllStatusUseCase;
+    private final GetStatusByIdUseCase getStatusByIdUseCase;
+    private final SaveDeveloperUseCase saveDeveloperUseCase;
+    private final GetAllDeveloperUseCase getAllDeveloperUseCase;
+    private final GetDeveloperByIdUseCase getDeveloperByIdUseCase;
+    private final GetLocationByIdUseCase getLocationByIdUseCase;
+    private final GetAllLocationUseCase getAllLocationUseCase;
+    private final SaveLocationUseCase saveLocationUseCase;
+    private final UpdateGenderUseCase updateGenderUseCase;
+    private final UpdateVideoGameUseCase updateVideoGameUseCase;
+    private final UpdateStatusUseCase updateStatusUseCase;
+    private final UpdateDeveloperUseCase updateDeveloperUseCase;
+    private final UpdateLocationUseCase updateLocationUseCase;
 
-private final ObjectMapper mapper;
+    private final ObjectMapper mapper;
 
     public Mono<ServerResponse> listenAllVideoGames(ServerRequest serverRequest) {
         return getAllVideoGamesUseCase.execute()
@@ -74,6 +86,17 @@ private final ObjectMapper mapper;
                 .flatMap(videogame -> ServerResponse.ok().bodyValue(videogame));
     }
 
+    public Mono<ServerResponse> listenPUTVideoGame(ServerRequest serverRequest) {
+        return serverRequest.bodyToMono(VideoGameRequestDTO.class)
+                .map(videoGameRequestDTO -> mapper.map(videoGameRequestDTO, VideoGameRequest.class))
+                .flatMap(videoGameRequest -> updateVideoGameUseCase.execute(serverRequest.pathVariable("id"), videoGameRequest))
+                .filter(Objects::nonNull)
+                .map(videogames -> mapper.map(videogames, VideoGameResponseDTO.class))
+                .flatMap(videogame -> ServerResponse.ok().bodyValue(videogame))
+                .switchIfEmpty(Mono.defer(() -> ServerResponse.notFound().build()))
+                .onErrorResume(throwable -> ServerResponse.badRequest().bodyValue("wrong...."));
+    }
+
     public Mono<ServerResponse> listenSaveGender(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(GenderRequestDTO.class)
                 .map(genderRequestDTO -> mapper.map(genderRequestDTO, GenderRequest.class))
@@ -90,6 +113,15 @@ private final ObjectMapper mapper;
         return getAllGenderUseCase.execute()
                 .collectList()
                 .flatMap(genders -> ServerResponse.ok().bodyValue(genders));
+    }
+
+    public Mono<ServerResponse> listenPutGender(ServerRequest serverRequest) {
+        return serverRequest.bodyToMono(GenderRequestDTO.class)
+                .map(genderRequestDTO -> mapper.map(genderRequestDTO, GenderRequest.class))
+                .flatMap(genderRequest -> updateGenderUseCase.execute(serverRequest.pathVariable("id"), genderRequest))
+                .filter(Objects::nonNull)
+                .flatMap(gender -> ServerResponse.ok().bodyValue(gender))
+                .switchIfEmpty(Mono.defer(() -> ServerResponse.notFound().build()));
     }
 
     public Mono<ServerResponse> listenSaveStatus(ServerRequest serverRequest) {
@@ -110,6 +142,16 @@ private final ObjectMapper mapper;
                 .flatMap(status -> ServerResponse.ok().bodyValue(status));
     }
 
+    public Mono<ServerResponse> listenPUTStatus(ServerRequest serverRequest) {
+        return serverRequest.bodyToMono(StatusRequestDTO.class)
+                .map(statusRequestDTO -> mapper.map(statusRequestDTO, StatusRequest.class))
+                .flatMap(statusRequest -> updateStatusUseCase.execute(serverRequest.pathVariable("id"), statusRequest))
+                .filter(Objects::nonNull)
+                .flatMap(status -> ServerResponse.ok().bodyValue(status))
+                .switchIfEmpty(Mono.defer(()-> ServerResponse.notFound().build()));
+
+    }
+
     public Mono<ServerResponse> listenSaveDeveloper(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(DeveloperRequestDTO.class)
                 .map(developerRequestDTO -> mapper.map(developerRequestDTO, DeveloperRequest.class))
@@ -128,6 +170,15 @@ private final ObjectMapper mapper;
                 .flatMap(developers -> ServerResponse.ok().bodyValue(developers));
     }
 
+    public Mono<ServerResponse> listenPUTDeveloper(ServerRequest serverRequest) {
+        return serverRequest.bodyToMono(DeveloperRequestDTO.class)
+                .map(developerRequestDTO -> mapper.map(developerRequestDTO, DeveloperRequest.class))
+                .flatMap(developerRequest -> updateDeveloperUseCase.execute(serverRequest.pathVariable("id"),developerRequest))
+                .filter(Objects::nonNull)
+                .flatMap(developer -> ServerResponse.ok().bodyValue(developer))
+                .switchIfEmpty(Mono.defer(()-> ServerResponse.notFound().build()));
+    }
+
     public Mono<ServerResponse> listenSaveLocation(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(LocationRequestDTO.class)
                 .map(locationRequestDTO -> mapper.map(locationRequestDTO, LocationRequest.class))
@@ -144,5 +195,14 @@ private final ObjectMapper mapper;
         return getAllLocationUseCase.execute()
                 .collectList()
                 .flatMap(location -> ServerResponse.ok().bodyValue(location));
+    }
+
+    public Mono<ServerResponse> listenPUTLocation(ServerRequest serverRequest) {
+        return serverRequest.bodyToMono(LocationRequestDTO.class)
+                .map(locationRequestDTO -> mapper.map(locationRequestDTO, LocationRequest.class))
+                .flatMap(locationRequest -> updateLocationUseCase.execute(serverRequest.pathVariable("id"), locationRequest))
+                .filter(Objects::nonNull)
+                .flatMap(location -> ServerResponse.ok().bodyValue(location))
+                .switchIfEmpty(Mono.defer(()-> ServerResponse.notFound().build()));
     }
 }

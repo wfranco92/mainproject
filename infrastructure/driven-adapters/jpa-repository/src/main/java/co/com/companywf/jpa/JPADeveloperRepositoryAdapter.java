@@ -42,4 +42,12 @@ public class JPADeveloperRepositoryAdapter extends AdapterOperations<Developer, 
                 .map(repository::save)
                 .map(developer -> mapper.map(developer, Developer.class));
     }
+
+    @Override
+    public Mono<Developer> updateDeveloper(String id, DeveloperRequest developerRequest) {
+        return Mono.justOrEmpty(repository.findById(id))
+                .map(developerEntity -> developerEntity.toBuilder().name(developerRequest.getName()).build())
+                .map(repository::save)
+                .map(developer -> mapper.map(developer, Developer.class));
+    }
 }

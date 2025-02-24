@@ -9,5 +9,6 @@ public interface DeveloperRepository {
     Mono<Developer> getDeveloperById(String id);
     Flux<Developer> getAllDeveloper();
     Mono<Developer> saveDeveloper(DeveloperRequest developerRequest);
+    Mono<Developer> updateDeveloper(String id, DeveloperRequest developerRequest);
 
 }

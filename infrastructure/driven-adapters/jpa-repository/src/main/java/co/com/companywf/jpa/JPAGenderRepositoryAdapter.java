@@ -38,6 +38,15 @@ public class JPAGenderRepositoryAdapter extends AdapterOperations<Gender, Gender
     }
 
     @Override
+    public Mono<Gender> updateGender(String id, GenderRequest genderRequest) {
+        return Mono.justOrEmpty(repository.findById(id))
+                .map(genderEntity -> genderEntity.toBuilder()
+                        .name(genderRequest.getName()).build())
+                .map(repository::save)
+                .map(genderEntity -> mapper.map(genderEntity, Gender.class));
+    }
+
+    @Override
     public Flux<Gender> getAllGender() {
         return Flux.fromIterable(repository.findAll())
                 .map(genderEntity -> mapper.map(genderEntity, Gender.class));

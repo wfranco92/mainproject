@@ -9,6 +9,7 @@ import reactor.core.publisher.Mono;
 
 public interface StatusRepository {
     Mono<Status> getStatusById(String id);
+    Mono<Status> updateStatus(String id, StatusRequest statusRequest);
     Mono<Status> saveStatus(StatusRequest status);
     Flux<Status> getAllStatus();
 }

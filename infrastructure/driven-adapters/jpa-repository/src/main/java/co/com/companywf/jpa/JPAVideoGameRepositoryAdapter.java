@@ -1,8 +1,9 @@
 package co.com.companywf.jpa;
 
-import co.com.companywf.jpa.entity.VideoGameEntity;
+import co.com.companywf.jpa.entity.*;
 import co.com.companywf.jpa.helper.AdapterOperations;
 import co.com.companywf.model.database.VideoGameDB;
+import co.com.companywf.model.videogame.VideoGameRequest;
 import co.com.companywf.model.videogame.Videogame;
 import co.com.companywf.model.videogame.gateways.VideogameRepository;
 import org.reactivecommons.utils.ObjectMapper;
@@ -50,6 +51,20 @@ public class JPAVideoGameRepositoryAdapter extends AdapterOperations<Videogame, 
     @Override
     public Mono<Videogame> getVideoGameById(String id) {
         return Mono.justOrEmpty(repository.findById(id))
+                .map(videoGameEntity -> mapper.map(videoGameEntity, Videogame.class));
+    }
+
+    @Override
+    public Mono<Videogame> updateVideoGame(String id, VideoGameDB videoGameRequest) {
+        return Mono.justOrEmpty(repository.findById(id))
+                .map(videoGameEntity -> videoGameEntity.toBuilder()
+                        .name(videoGameRequest.getName())
+                        .gender(mapper.map(videoGameRequest.getGender(), GenderEntity.class))
+                        .status(mapper.map(videoGameRequest.getStatus(), StatusEntity.class))
+                        .location(mapper.map(videoGameRequest.getLocation(), LocationEntity.class))
+                        .developer(mapper.map(videoGameRequest.getDeveloper(), DeveloperEntity.class))
+                        .build())
+                .map(repository::save)
                 .map(videoGameEntity -> mapper.map(videoGameEntity, Videogame.class));
     }
 }

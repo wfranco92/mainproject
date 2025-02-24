@@ -9,8 +9,6 @@ import java.time.LocalDateTime;
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
 @ToString
 @Builder(toBuilder = true)
 @Table(name = "videogame")
@@ -40,15 +38,18 @@ public class VideoGameEntity {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
     @PrePersist
     public void prePersist(){
-        System.out.println("Fecha de creacion de registro");
+        System.out.println("Fecha de creacion de registro videoGame");
         this.createdAt = LocalDateTime.now();
     }
 
     @PreUpdate
     public void preUpdate(){
-        System.out.println("Fecha de actualizacion de registro");
-        this.createdAt = LocalDateTime.now();
+        System.out.println("Fecha de actualizacion de registro videoGame");
+        this.updatedAt = LocalDateTime.now();
     }
 }

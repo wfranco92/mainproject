@@ -1,12 +1,18 @@
 package co.com.companywf.jpa.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Data
 @Entity
+@Builder(toBuilder = true)
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "developer")
 public class DeveloperEntity {
     @Id
@@ -15,6 +21,8 @@ public class DeveloperEntity {
     private String name;
     @Column(name = "created_at")
     private LocalDateTime createdAt;
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
     @PrePersist
     public void prePersist(){
@@ -25,6 +33,6 @@ public class DeveloperEntity {
     @PreUpdate
     public void preUpdate(){
         System.out.println("Fecha de actualizacion de registro developer");
-        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
     }
 }
