@@ -2,8 +2,8 @@ package co.com.companywf.jpa;
 
 import co.com.companywf.jpa.entity.GenderEntity;
 import co.com.companywf.jpa.helper.AdapterOperations;
-import co.com.companywf.model.gender.GenderRequest;
 import co.com.companywf.model.gender.Gender;
+import co.com.companywf.model.gender.GenderRequest;
 import co.com.companywf.model.gender.gateway.GenderRepository;
 import org.reactivecommons.utils.ObjectMapper;
 import org.springframework.stereotype.Repository;

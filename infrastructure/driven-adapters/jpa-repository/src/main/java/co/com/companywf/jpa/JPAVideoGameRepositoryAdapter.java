@@ -3,7 +3,6 @@ package co.com.companywf.jpa;
 import co.com.companywf.jpa.entity.*;
 import co.com.companywf.jpa.helper.AdapterOperations;
 import co.com.companywf.model.database.VideoGameDB;
-import co.com.companywf.model.videogame.VideoGameRequest;
 import co.com.companywf.model.videogame.Videogame;
 import co.com.companywf.model.videogame.gateways.VideogameRepository;
 import org.reactivecommons.utils.ObjectMapper;
@@ -65,6 +64,14 @@ public class JPAVideoGameRepositoryAdapter extends AdapterOperations<Videogame, 
                         .developer(mapper.map(videoGameRequest.getDeveloper(), DeveloperEntity.class))
                         .build())
                 .map(repository::save)
+                .map(videoGameEntity -> mapper.map(videoGameEntity, Videogame.class));
+    }
+
+    @Override
+    public Mono<Videogame> deleteVideoGameById(String id) {
+        return Mono.justOrEmpty(repository.findById(id)
+                .map(videoGameEntity -> {
+                    repository.deleteById(id); return videoGameEntity;}))
                 .map(videoGameEntity -> mapper.map(videoGameEntity, Videogame.class));
     }
 }

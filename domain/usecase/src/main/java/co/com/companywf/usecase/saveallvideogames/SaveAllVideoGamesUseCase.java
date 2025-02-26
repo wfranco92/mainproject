@@ -11,25 +11,31 @@ import co.com.companywf.model.location.gateways.LocationRepository;
 import co.com.companywf.model.status.gateway.StatusRepository;
 import co.com.companywf.model.videogame.VideoGameRequest;
 import co.com.companywf.model.videogame.Videogame;
-import co.com.companywf.model.videogame.gateways.*;
+import co.com.companywf.model.videogame.gateways.VideogameRepository;
+import co.com.companywf.usecase.AbstractUseCase;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @RequiredArgsConstructor
-public class SaveAllVideoGamesUseCase {
+public class SaveAllVideoGamesUseCase extends AbstractUseCase<VideoGameRequest> {
 
     private final VideogameRepository videogameRepository;
     private final GenderRepository genderRepository;
     private final StatusRepository statusRepository;
     private final DeveloperRepository developerRepository;
     private final LocationRepository locationRepository;
+    private static final String EMPTY = "";
+    private static final String NOT_VALIDATE_BODY_DATA = "los campos del body request no cumplen con la validacion minima.";
 
     public Flux<Videogame> execute(List<VideoGameRequest> videoGameRequest){
         return Flux.fromIterable(videoGameRequest)
+                .filter(this::validateBody)
+                .switchIfEmpty(Mono.error(new RuntimeException(NOT_VALIDATE_BODY_DATA)))
                 .flatMap(videoGame -> Mono.zip(genderRepository.getGenderById(Gender.idFromName(videoGame.getGender().toUpperCase())),
                         statusRepository.getStatusById(Status.idFromName(videoGame.getStatus().toUpperCase())),
                         developerRepository.getDeveloperById(Developer.idFromName(videoGame.getDeveloper().toUpperCase())),
@@ -44,5 +50,14 @@ public class SaveAllVideoGamesUseCase {
                                 .build()))
                 .collectList()
                 .flatMapMany(videogameRepository::saveAllVideoGames);
+    }
+
+    public boolean validateBody(VideoGameRequest videoGameRequest){
+        return Objects.nonNull(videoGameRequest) &&
+                Objects.nonNull(videoGameRequest.getName()) && !videoGameRequest.getName().equals(EMPTY) &&
+                Objects.nonNull(videoGameRequest.getDeveloper()) && !videoGameRequest.getDeveloper().equals(EMPTY) &&
+                Objects.nonNull(videoGameRequest.getGender()) && !videoGameRequest.getGender().equals(EMPTY) &&
+                Objects.nonNull(videoGameRequest.getStatus()) && !videoGameRequest.getStatus().equals(EMPTY) &&
+                Objects.nonNull(videoGameRequest.getLocation()) && !videoGameRequest.getLocation().equals(EMPTY);
     }
 }

@@ -1,7 +1,7 @@
 package co.com.companywf.model.gender.gateway;
 
-import co.com.companywf.model.gender.GenderRequest;
 import co.com.companywf.model.gender.Gender;
+import co.com.companywf.model.gender.GenderRequest;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
