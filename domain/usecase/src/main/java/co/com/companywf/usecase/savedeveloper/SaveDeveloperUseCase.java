@@ -29,6 +29,6 @@ public class SaveDeveloperUseCase extends AbstractUseCase<DeveloperRequest> {
 
     @Override
     public boolean validateBody(DeveloperRequest developerRequest) {
-        return Objects.nonNull(developerRequest.getName()) && developerRequest.getName().equals(EMPTY);
+        return Objects.nonNull(developerRequest.getName()) && !developerRequest.getName().equals(EMPTY);
     }
 }

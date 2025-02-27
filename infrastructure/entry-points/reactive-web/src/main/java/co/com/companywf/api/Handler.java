@@ -69,7 +69,7 @@ public class Handler {
     private static final String PATH_NOT_FOUND = "path not found.";
 
     public Mono<ServerResponse> listenAllVideoGames(ServerRequest serverRequest) {
-        return getAllVideoGamesUseCase.execute()
+        return getAllVideoGamesUseCase.execute(serverRequest.queryParam("page").orElse("0"), serverRequest.queryParam("size").orElse("10"))
                 .collectList()
                 .flatMap(videogame -> ServerResponse.ok().bodyValue(videogame))
                 .onErrorResume(throwable -> errorMessageHanlder(throwable.getMessage()));
@@ -192,7 +192,7 @@ public class Handler {
     }
 
     public Mono<ServerResponse> listenGetAllDeveloper(ServerRequest serverRequest) {
-        return getAllDeveloperUseCase.execute()
+        return getAllDeveloperUseCase.execute(serverRequest.queryParam("page").orElse("0"), serverRequest.queryParam("size").orElse("10"))
                 .collectList()
                 .flatMap(developers -> ServerResponse.ok().bodyValue(developers))
                 .onErrorResume(throwable -> errorMessageHanlder(throwable.getMessage()));

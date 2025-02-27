@@ -20,6 +20,7 @@ public enum Developer {
     FROM_SOFTWARE("d5cfa904-eb28-42cc-b5ed-22bed4565fe5"),
     RIOT_GAMES("e5d809ca-6587-4b60-9b83-ce865639881d"),
     CRYTEK("96a50918-3507-4a83-aac4-f20b475620ed"),
+    OTRO("dc348198-23f9-4b92-82bc-916160510c14"),
     UBISOFT("f184b778-7f85-4dcb-8431-3d5e9b57a6aa");
 
     private final String id;
@@ -29,6 +30,6 @@ public enum Developer {
                 .filter(status -> status.name().contentEquals(name))
                 .map(Developer::getId)
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("STATUS_NOT_FOUND_OR_INEXISTENT"));
+                .orElseThrow(() -> new RuntimeException(name + " - DEVELOPER_NOT_FOUND_OR_INEXISTENT"));
     }
 }

@@ -19,6 +19,6 @@ public enum Status {
                 .filter(status -> status.name().contentEquals(name))
                 .map(Status::getId)
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("STATUS_NOT_FOUND_OR_INEXISTENT"));
+                .orElseThrow(() -> new RuntimeException(name + " - STATUS_NOT_FOUND_OR_INEXISTENT"));
     }
 }
