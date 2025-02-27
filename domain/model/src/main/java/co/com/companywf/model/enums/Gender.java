@@ -16,6 +16,7 @@ public enum Gender {
     ROL("c132db6c-447f-4c5f-b098-97efc5f95303"),
     SURVIVOR("f35ab215-0ee3-430f-8306-66ff573b6e31"),
     OTRO("6f57dd56-10de-4c01-be95-19261876e125"),
+    PUZZLES("83ee0179-1cd1-4c5e-8cef-d60e6921d5d3"),
     ACCION("8286bd45-8ebe-4fb0-b737-dd45e61d63b3");
 
     private final String id;

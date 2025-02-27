@@ -21,6 +21,7 @@ public enum Developer {
     RIOT_GAMES("e5d809ca-6587-4b60-9b83-ce865639881d"),
     CRYTEK("96a50918-3507-4a83-aac4-f20b475620ed"),
     OTRO("dc348198-23f9-4b92-82bc-916160510c14"),
+    MICROSOFT("72a0b219-c7d0-4970-a960-10a7946944c6"),
     UBISOFT("f184b778-7f85-4dcb-8431-3d5e9b57a6aa");
 
     private final String id;

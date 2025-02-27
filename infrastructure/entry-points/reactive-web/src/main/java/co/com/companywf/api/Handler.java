@@ -22,6 +22,7 @@ import co.com.companywf.usecase.savedeveloper.SaveDeveloperUseCase;
 import co.com.companywf.usecase.savegender.SaveGenderUseCase;
 import co.com.companywf.usecase.savelocation.SaveLocationUseCase;
 import co.com.companywf.usecase.savestatus.SaveStatusUseCase;
+import co.com.companywf.usecase.statistics.StatisticsUseCase;
 import co.com.companywf.usecase.updatedeveloper.UpdateDeveloperUseCase;
 import co.com.companywf.usecase.updategender.UpdateGenderUseCase;
 import co.com.companywf.usecase.updatelocation.UpdateLocationUseCase;
@@ -63,6 +64,7 @@ public class Handler {
     private final UpdateDeveloperUseCase updateDeveloperUseCase;
     private final UpdateLocationUseCase updateLocationUseCase;
     private final DeleteVideoGameUseCase deleteVideoGameUseCase;
+    private final StatisticsUseCase statisticsUseCase;
 
     private final ObjectMapper mapper;
     private static final String MESSAGE = "message";
@@ -237,6 +239,11 @@ public class Handler {
                 .flatMap(location -> ServerResponse.ok().bodyValue(location))
                 .switchIfEmpty(Mono.defer(()-> ServerResponse.notFound().build()))
                 .onErrorResume(throwable -> errorMessageHanlder(throwable.getMessage()));
+    }
+
+    public Mono<ServerResponse> listenGETStatistics(ServerRequest serverRequest) {
+        return statisticsUseCase.execute()
+                .flatMap(statistics -> ServerResponse.ok().bodyValue(statistics));
     }
 
     private Mono<ServerResponse> errorMessageHanlder(Object object){

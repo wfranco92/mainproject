@@ -3,7 +3,7 @@ package co.com.companywf.jpa;
 import co.com.companywf.jpa.entity.*;
 import co.com.companywf.jpa.helper.AdapterOperations;
 import co.com.companywf.model.database.VideoGameDB;
-import co.com.companywf.model.videogame.Videogame;
+import co.com.companywf.model.videogame.*;
 import co.com.companywf.model.videogame.gateways.VideogameRepository;
 import org.reactivecommons.utils.ObjectMapper;
 import org.springframework.data.domain.Pageable;
@@ -74,5 +74,45 @@ public class JPAVideoGameRepositoryAdapter extends AdapterOperations<Videogame, 
                 .map(videoGameEntity -> {
                     repository.deleteById(id); return videoGameEntity;}))
                 .map(videoGameEntity -> mapper.map(videoGameEntity, Videogame.class));
+    }
+
+    @Override
+    public Flux<Statistics> getStatisticsAboutGender() {
+        return Mono.justOrEmpty(repository.getStatisticsAboutGender())
+                .flatMapMany(Flux::fromIterable)
+                .map(objects -> Statistics.builder()
+                        .gender(String.valueOf(objects[0]))
+                        .amount(Integer.parseInt(String.valueOf(objects[1])))
+                        .build());
+    }
+
+    @Override
+    public Flux<StatisticsDeveloper> getStatisticsAboutDeveloper() {
+        return Mono.justOrEmpty(repository.getStatisticsAboutDeveloper())
+                .flatMapMany(Flux::fromIterable)
+                .map(objects -> StatisticsDeveloper.builder()
+                        .developer(String.valueOf(objects[0]))
+                        .amount(Integer.parseInt(String.valueOf(objects[1])))
+                        .build());
+    }
+
+    @Override
+    public Flux<StatisticsStatus> getStatisticsAboutStatus() {
+        return Mono.justOrEmpty(repository.getStatisticsAboutStatus())
+                .flatMapMany(Flux::fromIterable)
+                .map(objects -> StatisticsStatus.builder()
+                        .status(String.valueOf(objects[0]))
+                        .amount(Integer.parseInt(String.valueOf(objects[1])))
+                        .build());
+    }
+
+    @Override
+    public Flux<StatisticsLocation> getStatisticsAboutLocation() {
+        return Mono.justOrEmpty(repository.getStatisticsAboutLocation())
+                .flatMapMany(Flux::fromIterable)
+                .map(objects -> StatisticsLocation.builder()
+                        .location(String.valueOf(objects[0]))
+                        .amount(Integer.parseInt(String.valueOf(objects[1])))
+                        .build());
     }
 }

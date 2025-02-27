@@ -1,7 +1,7 @@
 package co.com.companywf.model.videogame.gateways;
 
 import co.com.companywf.model.database.VideoGameDB;
-import co.com.companywf.model.videogame.Videogame;
+import co.com.companywf.model.videogame.*;
 import org.springframework.data.domain.Pageable;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -15,4 +15,8 @@ public interface VideogameRepository {
     Mono<Videogame> getVideoGameById(String id);
     Mono<Videogame> updateVideoGame(String id, VideoGameDB videoGameDB);
     Mono<Videogame> deleteVideoGameById(String id);
+    Flux<Statistics> getStatisticsAboutGender();
+    Flux<StatisticsDeveloper> getStatisticsAboutDeveloper();
+    Flux<StatisticsStatus> getStatisticsAboutStatus();
+    Flux<StatisticsLocation> getStatisticsAboutLocation();
 }
