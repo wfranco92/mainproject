@@ -26,6 +26,6 @@ public enum Location {
                 .filter(status -> status.name().contentEquals(name))
                 .map(Location::getId)
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("STATUS_NOT_FOUND_OR_INEXISTENT"));
+                .orElseThrow(() -> new RuntimeException(name + " - LOCATION_NOT_FOUND_OR_INEXISTENT"));
     }
 }

@@ -25,6 +25,6 @@ public enum Gender {
                 .filter(status -> status.name().contentEquals(name))
                 .map(Gender::getId)
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("STATUS_NOT_FOUND_OR_INEXISTENT"));
+                .orElseThrow(() -> new RuntimeException(name + " - GENDER_NOT_FOUND_OR_INEXISTENT"));
     }
 }

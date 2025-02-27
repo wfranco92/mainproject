@@ -2,6 +2,7 @@ package co.com.companywf.api;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.reactive.function.server.RequestPredicates;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.ServerResponse;
 
@@ -16,6 +17,7 @@ public class RouterRest {
                 .andRoute(GET("/api/v1/videogame/{id}"), handler::listenGetVideoGameById)
                 .andRoute(POST("/api/v1/videogame"), handler::listenSaveVideoGame)
                 .andRoute(PUT("/api/v1/videogame/{id}"), handler::listenPUTVideoGame)
+                .andRoute(DELETE("/api/v1/videogame/{id}"), handler::listenDeleteVideoGame)
                 .andRoute(POST("/api/v1/gender"), handler::listenSaveGender)
                 .andRoute(GET("/api/v1/gender/{id}"), handler::listenGetGenderById)
                 .andRoute(GET("/api/v1/gender"), handler::listenGetAllGender)
@@ -31,6 +33,7 @@ public class RouterRest {
                 .andRoute(POST("/api/v1/location"), handler::listenSaveLocation)
                 .andRoute(GET("/api/v1/location/{id}"), handler::listenGetLocationById)
                 .andRoute(GET("/api/v1/location"), handler::listenGetAllLocation)
-                .andRoute(PUT("/api/v1/location/{id}"), handler::listenPUTLocation);
+                .andRoute(PUT("/api/v1/location/{id}"), handler::listenPUTLocation)
+                .andRoute(RequestPredicates.all(), handler::handleNotFound);
     }
 }

@@ -5,8 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.swing.text.TabableView;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

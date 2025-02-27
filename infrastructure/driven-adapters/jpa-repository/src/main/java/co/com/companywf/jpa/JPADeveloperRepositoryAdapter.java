@@ -6,6 +6,7 @@ import co.com.companywf.model.developer.Developer;
 import co.com.companywf.model.developer.DeveloperRequest;
 import co.com.companywf.model.developer.gateways.DeveloperRepository;
 import org.reactivecommons.utils.ObjectMapper;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -30,8 +31,8 @@ public class JPADeveloperRepositoryAdapter extends AdapterOperations<Developer, 
     }
 
     @Override
-    public Flux<Developer> getAllDeveloper() {
-        return Flux.fromIterable(repository.findAll())
+    public Flux<Developer> getAllDeveloper(Pageable pageable) {
+        return Flux.fromIterable(repository.findAll(pageable))
                 .map(developerEntity-> mapper.map(developerEntity, Developer.class));
     }
 

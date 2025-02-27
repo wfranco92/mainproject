@@ -1,7 +1,5 @@
 package co.com.companywf.model.status.gateway;
 
-import co.com.companywf.model.gender.Gender;
-import co.com.companywf.model.gender.GenderRequest;
 import co.com.companywf.model.status.Status;
 import co.com.companywf.model.status.StatusRequest;
 import reactor.core.publisher.Flux;
