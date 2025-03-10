@@ -10,6 +10,7 @@ import java.util.List;
 
 public interface VideogameRepository {
     Flux<Videogame> getAllVideoGames();
+    Flux<Videogame> findVideoGamesWhitDescriptionLikeName(String name);
     Flux<Videogame> getAllVideoGamesWithDescription(Pageable pageable);
     Flux<Videogame> saveAllVideoGames(List<VideoGameDB> videoGameRequestList);
     Mono<Videogame> getVideoGameById(String id);

@@ -22,6 +22,7 @@ import co.com.companywf.usecase.savedeveloper.SaveDeveloperUseCase;
 import co.com.companywf.usecase.savegender.SaveGenderUseCase;
 import co.com.companywf.usecase.savelocation.SaveLocationUseCase;
 import co.com.companywf.usecase.savestatus.SaveStatusUseCase;
+import co.com.companywf.usecase.searchvideogamebyname.SearchVideoGameByNameUseCase;
 import co.com.companywf.usecase.statistics.StatisticsUseCase;
 import co.com.companywf.usecase.updatedeveloper.UpdateDeveloperUseCase;
 import co.com.companywf.usecase.updategender.UpdateGenderUseCase;
@@ -65,6 +66,7 @@ public class Handler {
     private final UpdateLocationUseCase updateLocationUseCase;
     private final DeleteVideoGameUseCase deleteVideoGameUseCase;
     private final StatisticsUseCase statisticsUseCase;
+    private final SearchVideoGameByNameUseCase searchVideoGameByNameUseCase;
 
     private final ObjectMapper mapper;
     private static final String MESSAGE = "message";
@@ -244,6 +246,13 @@ public class Handler {
     public Mono<ServerResponse> listenGETStatistics(ServerRequest serverRequest) {
         return statisticsUseCase.execute()
                 .flatMap(statistics -> ServerResponse.ok().bodyValue(statistics));
+    }
+
+    public Mono<ServerResponse> listenGETSearch(ServerRequest serverRequest) {
+        return searchVideoGameByNameUseCase.execute(serverRequest.queryParam("name").orElse("name"))
+                .map(videogame -> mapper.map(videogame, VideoGameResponseDTO.class))
+                .collectList()
+                .flatMap(videoGameResponseDTOS -> ServerResponse.ok().bodyValue(videoGameResponseDTOS));
     }
 
     private Mono<ServerResponse> errorMessageHanlder(Object object){

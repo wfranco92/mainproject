@@ -33,6 +33,12 @@ public class JPAVideoGameRepositoryAdapter extends AdapterOperations<Videogame, 
     }
 
     @Override
+    public Flux<Videogame> findVideoGamesWhitDescriptionLikeName(String name) {
+        return Flux.fromIterable(repository.findVideoGamesWhitDescriptionLikeName(name))
+                .map(videoGameDescriptionDTO -> mapper.map(videoGameDescriptionDTO, Videogame.class));
+    }
+
+    @Override
     public Flux<Videogame> getAllVideoGamesWithDescription(Pageable pageable) {
         return Flux.fromIterable(repository.findVideoGamesWhitDescription(pageable))
                 .map(videoGameDescriptionDTO -> mapper.map(videoGameDescriptionDTO, Videogame.class));
