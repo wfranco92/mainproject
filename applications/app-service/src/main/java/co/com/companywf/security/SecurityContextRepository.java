@@ -23,7 +23,6 @@ public class SecurityContextRepository implements ServerSecurityContextRepositor
                 .flatMap(auth-> this.authManager.authenticate(
                         new UsernamePasswordAuthenticationToken(auth.substring(7), auth.substring(7)))
                         .map(SecurityContextImpl::new)
-                        .onErrorResume(Mono::error)
                 );
     }
 

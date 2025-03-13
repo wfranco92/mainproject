@@ -6,6 +6,7 @@ import co.com.companywf.model.location.Location;
 import co.com.companywf.model.location.LocationRequest;
 import co.com.companywf.model.location.gateways.LocationRepository;
 import org.reactivecommons.utils.ObjectMapper;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -24,6 +25,7 @@ public class JPALocationRepositoryAdapter extends AdapterOperations<Location, Lo
     }
 
     @Override
+    @Cacheable("location")
     public Mono<Location> getLocationById(String id) {
         return Mono.justOrEmpty(repository.findById(id)
                 .map(locationEntity -> mapper.map(locationEntity, Location.class)));

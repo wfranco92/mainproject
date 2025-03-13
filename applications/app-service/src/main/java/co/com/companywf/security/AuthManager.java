@@ -1,5 +1,6 @@
 package co.com.companywf.security;
 
+import co.com.companywf.model.exception.AuthenticacionException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,6 +29,7 @@ public class AuthManager implements ReactiveAuthenticationManager {
                         .parseSignedClaims(auth.getCredentials().toString().replace("Bearer ", ""))
                         .getPayload())
                 .switchIfEmpty(Mono.empty())
+                .onErrorResume(throwable -> Mono.error(new AuthenticacionException(throwable.getMessage())))
                 .map(claims -> new UsernamePasswordAuthenticationToken(
                         claims.getSubject(), null,
                         ((List<String>) claims.get("authorities", List.class)).stream()

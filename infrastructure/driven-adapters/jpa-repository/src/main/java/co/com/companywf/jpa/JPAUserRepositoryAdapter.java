@@ -1,16 +1,11 @@
 package co.com.companywf.jpa;
 
-import co.com.companywf.jpa.entity.DeveloperEntity;
 import co.com.companywf.jpa.entity.UserEntity;
 import co.com.companywf.jpa.helper.AdapterOperations;
-import co.com.companywf.model.developer.Developer;
-import co.com.companywf.model.developer.DeveloperRequest;
-import co.com.companywf.model.developer.gateways.DeveloperRepository;
 import co.com.companywf.model.user.User;
 import co.com.companywf.model.user.UserRequest;
 import co.com.companywf.model.user.gateways.UserRepository;
 import org.reactivecommons.utils.ObjectMapper;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;

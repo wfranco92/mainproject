@@ -6,6 +6,7 @@ import co.com.companywf.model.status.Status;
 import co.com.companywf.model.status.StatusRequest;
 import co.com.companywf.model.status.gateway.StatusRepository;
 import org.reactivecommons.utils.ObjectMapper;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -24,6 +25,7 @@ public class JPAStatusRepositoryAdapter extends AdapterOperations<Status, Status
     }
 
     @Override
+    @Cacheable("status")
     public Mono<Status> getStatusById(String id) {
         return Mono.justOrEmpty(repository.findById(id)
                 .map(statusEntity -> mapper.map(statusEntity, Status.class)));

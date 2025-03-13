@@ -1,12 +1,11 @@
 package co.com.companywf.api;
 
 import co.com.companywf.api.dto.*;
+import co.com.companywf.api.jwt.JwtUtils;
 import co.com.companywf.model.developer.DeveloperRequest;
 import co.com.companywf.model.gender.GenderRequest;
 import co.com.companywf.model.location.LocationRequest;
-import co.com.companywf.model.role.Role;
 import co.com.companywf.model.status.StatusRequest;
-import co.com.companywf.model.user.User;
 import co.com.companywf.model.user.UserRequest;
 import co.com.companywf.model.videogame.VideoGameRequest;
 import co.com.companywf.usecase.createuser.CreateUserUseCase;
@@ -35,11 +34,8 @@ import co.com.companywf.usecase.updategender.UpdateGenderUseCase;
 import co.com.companywf.usecase.updatelocation.UpdateLocationUseCase;
 import co.com.companywf.usecase.updatestatus.UpdateStatusUseCase;
 import co.com.companywf.usecase.updatevideogame.UpdateVideoGameUseCase;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import org.reactivecommons.utils.ObjectMapper;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.MapReactiveUserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -49,7 +45,6 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
 import java.net.URI;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -90,12 +85,9 @@ public class Handler {
     private static final String MESSAGE_TOKEN = "token";
     private static final String PATH_NOT_FOUND = "path not found.";
 
-    @Value("${secretKey}")
-    String CLAVE;
-    private static final long TIEMPO_VIDA = 3_600_000;
-
     private final MapReactiveUserDetailsService detailsService;
     private final PasswordEncoder passWordEncoder;
+    private final JwtUtils jwtUtils;
 
     public Mono<ServerResponse> listenAllVideoGames(ServerRequest serverRequest) {
         return getAllVideoGamesUseCase.execute(serverRequest.queryParam("page").orElse("0"), serverRequest.queryParam("size").orElse("10"))
@@ -303,19 +295,8 @@ public class Handler {
                 .map(userDTO -> mapper.map(userDTO, UserRequest.class))
                 .flatMap(userRequest -> findUserUseCase.execute(userRequest)
                         .filter(user -> passWordEncoder.matches(userRequest.getPassword(), user.getPassword())))
-                .flatMap(user -> messageTokenHandler(getToken(user)))
+                .flatMap(user -> messageTokenHandler(jwtUtils.getToken(user)))
                 .switchIfEmpty(ServerResponse.status(HttpStatus.UNAUTHORIZED).build());
-    }
-
-    private String getToken(User details) {
-        return Jwts.builder()
-                .subject(details.getUsername())
-                .issuedAt(new Date())
-                .claim("authorities", details.getRoles().stream().map(Role::getRolName).toList())
-                .expiration(new Date(System.currentTimeMillis() + TIEMPO_VIDA))
-                .signWith(Keys.hmacShaKeyFor(CLAVE.getBytes()))
-                .compact();
-
     }
 
     public Mono<ServerResponse> listenSignup(ServerRequest serverRequest) {

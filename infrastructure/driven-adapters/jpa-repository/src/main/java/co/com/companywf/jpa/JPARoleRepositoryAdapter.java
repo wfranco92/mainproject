@@ -1,13 +1,9 @@
 package co.com.companywf.jpa;
 
 import co.com.companywf.jpa.entity.RoleEntity;
-import co.com.companywf.jpa.entity.UserEntity;
 import co.com.companywf.jpa.helper.AdapterOperations;
 import co.com.companywf.model.role.Role;
 import co.com.companywf.model.role.gateways.RoleRepository;
-import co.com.companywf.model.user.User;
-import co.com.companywf.model.user.UserRequest;
-import co.com.companywf.model.user.gateways.UserRepository;
 import org.reactivecommons.utils.ObjectMapper;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Mono;

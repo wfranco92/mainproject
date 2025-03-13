@@ -3,6 +3,8 @@ package co.com.companywf.usecase.savedeveloper;
 import co.com.companywf.model.developer.Developer;
 import co.com.companywf.model.developer.DeveloperRequest;
 import co.com.companywf.model.developer.gateways.DeveloperRepository;
+import co.com.companywf.model.enums.MessageUtilsEnum;
+import co.com.companywf.model.exception.ValidateDataException;
 import co.com.companywf.usecase.AbstractUseCase;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
@@ -14,13 +16,11 @@ import java.util.UUID;
 public class SaveDeveloperUseCase extends AbstractUseCase<DeveloperRequest> {
 
     private final DeveloperRepository developerRepository;
-    private static final String EMPTY = "";
-    private static final String NOT_VALIDATE_BODY_DATA = "los campos del body request no cumplen con la validacion minima.";
 
     public Mono<Developer> execute(DeveloperRequest developerRequest){
         return Mono.just(developerRequest)
                 .filter(this::validateBody)
-                .switchIfEmpty(Mono.error(new RuntimeException(NOT_VALIDATE_BODY_DATA)))
+                .switchIfEmpty(Mono.error(new ValidateDataException(MessageUtilsEnum.NOT_VALIDATE_BODY_DATA.getMessage())))
                 .map(request -> developerRequest.toBuilder()
                         .developerId(UUID.randomUUID().toString())
                         .build())
@@ -29,6 +29,6 @@ public class SaveDeveloperUseCase extends AbstractUseCase<DeveloperRequest> {
 
     @Override
     public boolean validateBody(DeveloperRequest developerRequest) {
-        return Objects.nonNull(developerRequest.getName()) && !developerRequest.getName().equals(EMPTY);
+        return Objects.nonNull(developerRequest.getName()) && !developerRequest.getName().equals(MessageUtilsEnum.EMPTY.getMessage());
     }
 }

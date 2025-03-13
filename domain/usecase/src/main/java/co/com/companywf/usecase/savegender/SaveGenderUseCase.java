@@ -1,5 +1,7 @@
 package co.com.companywf.usecase.savegender;
 
+import co.com.companywf.model.enums.MessageUtilsEnum;
+import co.com.companywf.model.exception.ValidateDataException;
 import co.com.companywf.model.gender.Gender;
 import co.com.companywf.model.gender.GenderRequest;
 import co.com.companywf.model.gender.gateway.GenderRepository;
@@ -14,14 +16,11 @@ import java.util.UUID;
 public class SaveGenderUseCase extends AbstractUseCase<GenderRequest> {
 
     private final GenderRepository genderRepository;
-    private static final String EMPTY = "";
-    private static final String NOT_VALIDATE_BODY_DATA = "los campos del body request no cumplen con la validacion minima.";
-
 
     public Mono<Gender> execute(GenderRequest genderRequest){
         return Mono.just(genderRequest)
                 .filter(this::validateBody)
-                .switchIfEmpty(Mono.error(new RuntimeException(NOT_VALIDATE_BODY_DATA)))
+                .switchIfEmpty(Mono.error(new ValidateDataException(MessageUtilsEnum.NOT_VALIDATE_BODY_DATA.getMessage())))
                 .map(gender -> genderRequest
                         .toBuilder()
                         .genderId(UUID.randomUUID().toString())
@@ -31,6 +30,6 @@ public class SaveGenderUseCase extends AbstractUseCase<GenderRequest> {
 
     @Override
     public boolean validateBody(GenderRequest genderRequest) {
-        return Objects.nonNull(genderRequest) && !genderRequest.getName().equals(EMPTY);
+        return Objects.nonNull(genderRequest) && !genderRequest.getName().equals(MessageUtilsEnum.EMPTY.getMessage());
     }
 }
