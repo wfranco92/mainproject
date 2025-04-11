@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder(toBuilder = true)
 public class Location {
     private String locationId;
     private String name;
