@@ -91,7 +91,6 @@ public class Handler {
 
     public Mono<ServerResponse> listenAllVideoGames(ServerRequest serverRequest) {
         return getAllVideoGamesUseCase.execute(serverRequest.queryParam("page").orElse("0"), serverRequest.queryParam("size").orElse("10"))
-                .collectList()
                 .flatMap(videogame -> ServerResponse.ok().bodyValue(videogame))
                 .onErrorResume(throwable -> errorMessageHanlder(throwable.getMessage()));
 //        return ServerResponse.ok().body(getAllVideoGamesUseCase.execute(), Videogame.class);

@@ -6,6 +6,8 @@ import co.com.companywf.model.database.VideoGameDB;
 import co.com.companywf.model.videogame.*;
 import co.com.companywf.model.videogame.gateways.VideogameRepository;
 import org.reactivecommons.utils.ObjectMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
@@ -39,9 +41,11 @@ public class JPAVideoGameRepositoryAdapter extends AdapterOperations<Videogame, 
     }
 
     @Override
-    public Flux<Videogame> getAllVideoGamesWithDescription(Pageable pageable) {
-        return Flux.fromIterable(repository.findVideoGamesWhitDescription(pageable))
-                .map(videoGameDescriptionDTO -> mapper.map(videoGameDescriptionDTO, Videogame.class));
+    public Mono<Page<Videogame>> getAllVideoGamesWithDescription(Pageable pageable) {
+        return Mono.just(repository.findVideoGamesWhitDescription(pageable))
+                .flatMap(page -> Flux.fromIterable(page.getContent())
+                .map(videoGameDescriptionDTO -> mapper.map(videoGameDescriptionDTO, Videogame.class))
+                        .collectList().map(videogames -> new PageImpl<>(videogames, pageable, page.getTotalElements())));
     }
 
     @Override

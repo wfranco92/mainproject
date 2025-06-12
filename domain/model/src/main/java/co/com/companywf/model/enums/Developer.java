@@ -22,6 +22,7 @@ public enum Developer {
     CRYTEK("96a50918-3507-4a83-aac4-f20b475620ed"),
     OTRO("dc348198-23f9-4b92-82bc-916160510c14"),
     MICROSOFT("72a0b219-c7d0-4970-a960-10a7946944c6"),
+    ROCKSTAR("3dc3d747-e623-487a-a27a-8ec7f241e2c2"),
     UBISOFT("f184b778-7f85-4dcb-8431-3d5e9b57a6aa");
 
     private final String id;
