@@ -5,11 +5,14 @@ import co.com.companywf.model.gender.gateway.GenderRepository;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
 
+import java.util.Comparator;
+
 @RequiredArgsConstructor
 public class GetAllGenderUseCase {
     private final GenderRepository genderRepository;
 
     public Flux<Gender> execute(){
-        return genderRepository.getAllGender();
+        return genderRepository.getAllGender()
+                .sort(Comparator.comparing(Gender::getName));
     }
 }

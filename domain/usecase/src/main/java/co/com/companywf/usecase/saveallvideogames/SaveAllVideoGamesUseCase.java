@@ -2,10 +2,8 @@ package co.com.companywf.usecase.saveallvideogames;
 
 import co.com.companywf.model.database.VideoGameDB;
 import co.com.companywf.model.developer.gateways.DeveloperRepository;
-import co.com.companywf.model.enums.Developer;
-import co.com.companywf.model.enums.Gender;
-import co.com.companywf.model.enums.Location;
-import co.com.companywf.model.enums.Status;
+import co.com.companywf.model.enums.*;
+import co.com.companywf.model.exception.ValidateDataException;
 import co.com.companywf.model.gender.gateway.GenderRepository;
 import co.com.companywf.model.location.gateways.LocationRepository;
 import co.com.companywf.model.status.gateway.StatusRepository;
@@ -29,13 +27,11 @@ public class SaveAllVideoGamesUseCase extends AbstractUseCase<VideoGameRequest> 
     private final StatusRepository statusRepository;
     private final DeveloperRepository developerRepository;
     private final LocationRepository locationRepository;
-    private static final String EMPTY = "";
-    private static final String NOT_VALIDATE_BODY_DATA = "los campos del body request no cumplen con la validacion minima.";
 
     public Flux<Videogame> execute(List<VideoGameRequest> videoGameRequest){
         return Flux.fromIterable(videoGameRequest)
                 .filter(this::validateBody)
-                .switchIfEmpty(Mono.error(new RuntimeException(NOT_VALIDATE_BODY_DATA)))
+                .switchIfEmpty(Mono.error(new ValidateDataException(MessageUtilsEnum.NOT_VALIDATE_BODY_DATA.getMessage())))
                 .flatMap(videoGame -> Mono.zip(genderRepository.getGenderById(Gender.idFromName(videoGame.getGender().toUpperCase())),
                         statusRepository.getStatusById(Status.idFromName(videoGame.getStatus().toUpperCase())),
                         developerRepository.getDeveloperById(Developer.idFromName(videoGame.getDeveloper().toUpperCase())),
@@ -54,10 +50,10 @@ public class SaveAllVideoGamesUseCase extends AbstractUseCase<VideoGameRequest> 
 
     public boolean validateBody(VideoGameRequest videoGameRequest){
         return Objects.nonNull(videoGameRequest) &&
-                Objects.nonNull(videoGameRequest.getName()) && !videoGameRequest.getName().equals(EMPTY) &&
-                Objects.nonNull(videoGameRequest.getDeveloper()) && !videoGameRequest.getDeveloper().equals(EMPTY) &&
-                Objects.nonNull(videoGameRequest.getGender()) && !videoGameRequest.getGender().equals(EMPTY) &&
-                Objects.nonNull(videoGameRequest.getStatus()) && !videoGameRequest.getStatus().equals(EMPTY) &&
-                Objects.nonNull(videoGameRequest.getLocation()) && !videoGameRequest.getLocation().equals(EMPTY);
+                Objects.nonNull(videoGameRequest.getName()) && !videoGameRequest.getName().equals(MessageUtilsEnum.EMPTY.getMessage()) &&
+                Objects.nonNull(videoGameRequest.getDeveloper()) && !videoGameRequest.getDeveloper().equals(MessageUtilsEnum.EMPTY.getMessage()) &&
+                Objects.nonNull(videoGameRequest.getGender()) && !videoGameRequest.getGender().equals(MessageUtilsEnum.EMPTY.getMessage()) &&
+                Objects.nonNull(videoGameRequest.getStatus()) && !videoGameRequest.getStatus().equals(MessageUtilsEnum.EMPTY.getMessage()) &&
+                Objects.nonNull(videoGameRequest.getLocation()) && !videoGameRequest.getLocation().equals(MessageUtilsEnum.EMPTY.getMessage());
     }
 }

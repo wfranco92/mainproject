@@ -1,16 +1,21 @@
 package co.com.companywf.api;
 
 import co.com.companywf.api.dto.*;
+import co.com.companywf.api.jwt.JwtUtils;
 import co.com.companywf.model.developer.DeveloperRequest;
 import co.com.companywf.model.gender.GenderRequest;
 import co.com.companywf.model.location.LocationRequest;
 import co.com.companywf.model.status.StatusRequest;
+import co.com.companywf.model.user.UserRequest;
 import co.com.companywf.model.videogame.VideoGameRequest;
+import co.com.companywf.usecase.createuser.CreateUserUseCase;
 import co.com.companywf.usecase.deletevideogame.DeleteVideoGameUseCase;
+import co.com.companywf.usecase.finduser.FindUserUseCase;
 import co.com.companywf.usecase.getalldeveloper.GetAllDeveloperUseCase;
 import co.com.companywf.usecase.getallgender.GetAllGenderUseCase;
 import co.com.companywf.usecase.getalllocation.GetAllLocationUseCase;
 import co.com.companywf.usecase.getallstatus.GetAllStatusUseCase;
+import co.com.companywf.usecase.getalluser.GetAllUserUseCase;
 import co.com.companywf.usecase.getallvideogames.GetAllVideoGamesUseCase;
 import co.com.companywf.usecase.getdeveloperbyid.GetDeveloperByIdUseCase;
 import co.com.companywf.usecase.getgenderbyid.GetGenderByIdUseCase;
@@ -22,6 +27,8 @@ import co.com.companywf.usecase.savedeveloper.SaveDeveloperUseCase;
 import co.com.companywf.usecase.savegender.SaveGenderUseCase;
 import co.com.companywf.usecase.savelocation.SaveLocationUseCase;
 import co.com.companywf.usecase.savestatus.SaveStatusUseCase;
+import co.com.companywf.usecase.searchvideogamebyname.SearchVideoGameByNameUseCase;
+import co.com.companywf.usecase.statistics.StatisticsUseCase;
 import co.com.companywf.usecase.updatedeveloper.UpdateDeveloperUseCase;
 import co.com.companywf.usecase.updategender.UpdateGenderUseCase;
 import co.com.companywf.usecase.updatelocation.UpdateLocationUseCase;
@@ -29,11 +36,15 @@ import co.com.companywf.usecase.updatestatus.UpdateStatusUseCase;
 import co.com.companywf.usecase.updatevideogame.UpdateVideoGameUseCase;
 import lombok.RequiredArgsConstructor;
 import org.reactivecommons.utils.ObjectMapper;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.userdetails.MapReactiveUserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -63,14 +74,23 @@ public class Handler {
     private final UpdateDeveloperUseCase updateDeveloperUseCase;
     private final UpdateLocationUseCase updateLocationUseCase;
     private final DeleteVideoGameUseCase deleteVideoGameUseCase;
+    private final StatisticsUseCase statisticsUseCase;
+    private final SearchVideoGameByNameUseCase searchVideoGameByNameUseCase;
+    private final CreateUserUseCase createUserUseCase;
+    private final FindUserUseCase findUserUseCase;
+    private final GetAllUserUseCase getAllUserUseCase;
 
     private final ObjectMapper mapper;
     private static final String MESSAGE = "message";
+    private static final String MESSAGE_TOKEN = "token";
     private static final String PATH_NOT_FOUND = "path not found.";
+
+    private final MapReactiveUserDetailsService detailsService;
+    private final PasswordEncoder passWordEncoder;
+    private final JwtUtils jwtUtils;
 
     public Mono<ServerResponse> listenAllVideoGames(ServerRequest serverRequest) {
         return getAllVideoGamesUseCase.execute(serverRequest.queryParam("page").orElse("0"), serverRequest.queryParam("size").orElse("10"))
-                .collectList()
                 .flatMap(videogame -> ServerResponse.ok().bodyValue(videogame))
                 .onErrorResume(throwable -> errorMessageHanlder(throwable.getMessage()));
 //        return ServerResponse.ok().body(getAllVideoGamesUseCase.execute(), Videogame.class);
@@ -172,7 +192,7 @@ public class Handler {
                 .flatMap(statusRequest -> updateStatusUseCase.execute(serverRequest.pathVariable("id"), statusRequest))
                 .filter(Objects::nonNull)
                 .flatMap(status -> ServerResponse.ok().bodyValue(status))
-                .switchIfEmpty(Mono.defer(()-> ServerResponse.notFound().build()))
+                .switchIfEmpty(Mono.defer(() -> ServerResponse.notFound().build()))
                 .onErrorResume(throwable -> errorMessageHanlder(throwable.getMessage()));
 
     }
@@ -201,10 +221,10 @@ public class Handler {
     public Mono<ServerResponse> listenPUTDeveloper(ServerRequest serverRequest) {
         return serverRequest.bodyToMono(DeveloperRequestDTO.class)
                 .map(developerRequestDTO -> mapper.map(developerRequestDTO, DeveloperRequest.class))
-                .flatMap(developerRequest -> updateDeveloperUseCase.execute(serverRequest.pathVariable("id"),developerRequest))
+                .flatMap(developerRequest -> updateDeveloperUseCase.execute(serverRequest.pathVariable("id"), developerRequest))
                 .filter(Objects::nonNull)
                 .flatMap(developer -> ServerResponse.ok().bodyValue(developer))
-                .switchIfEmpty(Mono.defer(()-> ServerResponse.notFound().build()))
+                .switchIfEmpty(Mono.defer(() -> ServerResponse.notFound().build()))
                 .onErrorResume(throwable -> errorMessageHanlder(throwable.getMessage()));
     }
 
@@ -235,19 +255,59 @@ public class Handler {
                 .flatMap(locationRequest -> updateLocationUseCase.execute(serverRequest.pathVariable("id"), locationRequest))
                 .filter(Objects::nonNull)
                 .flatMap(location -> ServerResponse.ok().bodyValue(location))
-                .switchIfEmpty(Mono.defer(()-> ServerResponse.notFound().build()))
+                .switchIfEmpty(Mono.defer(() -> ServerResponse.notFound().build()))
                 .onErrorResume(throwable -> errorMessageHanlder(throwable.getMessage()));
     }
 
-    private Mono<ServerResponse> errorMessageHanlder(Object object){
+    public Mono<ServerResponse> listenGETStatistics(ServerRequest serverRequest) {
+        return statisticsUseCase.execute()
+                .flatMap(statistics -> ServerResponse.ok().bodyValue(statistics));
+    }
+
+    public Mono<ServerResponse> listenGETSearch(ServerRequest serverRequest) {
+        return searchVideoGameByNameUseCase.execute(serverRequest.queryParam("name").orElse("name"))
+                .map(videogame -> mapper.map(videogame, VideoGameResponseDTO.class))
+                .collectList()
+                .flatMap(videoGameResponseDTOS -> ServerResponse.ok().bodyValue(videoGameResponseDTOS));
+    }
+
+    private Mono<ServerResponse> errorMessageHanlder(Object object) {
         Map<String, Object> message = new HashMap<>();
         message.put(MESSAGE, object);
         return ServerResponse.badRequest().bodyValue(message);
+    }
+
+    private Mono<ServerResponse> messageTokenHandler(Object object) {
+        Map<String, Object> message = new HashMap<>();
+        message.put(MESSAGE_TOKEN, object);
+        return ServerResponse.ok().bodyValue(message);
     }
 
     public Mono<ServerResponse> handleNotFound(ServerRequest serverRequest) {
         Map<String, Object> message = new HashMap<>();
         message.put(MESSAGE, PATH_NOT_FOUND);
         return ServerResponse.status(404).bodyValue(message);
+    }
+
+    public Mono<ServerResponse> listenLogin(ServerRequest serverRequest) {
+        return serverRequest.bodyToMono(UserLoginDTO.class)
+                .map(userDTO -> mapper.map(userDTO, UserRequest.class))
+                .flatMap(userRequest -> findUserUseCase.execute(userRequest)
+                        .filter(user -> passWordEncoder.matches(userRequest.getPassword(), user.getPassword())))
+                .flatMap(user -> messageTokenHandler(jwtUtils.getToken(user)))
+                .switchIfEmpty(ServerResponse.status(HttpStatus.UNAUTHORIZED).build());
+    }
+
+    public Mono<ServerResponse> listenSignup(ServerRequest serverRequest) {
+        return serverRequest.bodyToMono(UserSaveDTO.class)
+                .map(userSaveDTO -> mapper.map(userSaveDTO, UserRequest.class))
+                .flatMap(createUserUseCase::execute)
+                .flatMap(user -> ServerResponse.created(URI.create("/api/signup")).build());
+    }
+
+    public Mono<ServerResponse> listenGETUser(ServerRequest serverRequest) {
+        return getAllUserUseCase.execute()
+                .collectList()
+                .flatMap(user -> ServerResponse.ok().bodyValue(user));
     }
 }

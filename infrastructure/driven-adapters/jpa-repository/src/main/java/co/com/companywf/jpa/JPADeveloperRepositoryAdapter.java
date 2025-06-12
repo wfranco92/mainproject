@@ -6,6 +6,7 @@ import co.com.companywf.model.developer.Developer;
 import co.com.companywf.model.developer.DeveloperRequest;
 import co.com.companywf.model.developer.gateways.DeveloperRepository;
 import org.reactivecommons.utils.ObjectMapper;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
@@ -25,6 +26,7 @@ public class JPADeveloperRepositoryAdapter extends AdapterOperations<Developer, 
     }
 
     @Override
+    @Cacheable("developer")
     public Mono<Developer> getDeveloperById(String id) {
         return Mono.justOrEmpty(repository.findById(id)
                 .map(developer -> mapper.map(developer, Developer.class)));

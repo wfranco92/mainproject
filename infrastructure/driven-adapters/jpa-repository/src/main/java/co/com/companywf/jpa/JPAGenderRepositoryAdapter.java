@@ -6,6 +6,7 @@ import co.com.companywf.model.gender.Gender;
 import co.com.companywf.model.gender.GenderRequest;
 import co.com.companywf.model.gender.gateway.GenderRepository;
 import org.reactivecommons.utils.ObjectMapper;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -24,6 +25,7 @@ public class JPAGenderRepositoryAdapter extends AdapterOperations<Gender, Gender
     }
 
     @Override
+    @Cacheable("gender")
     public Mono<Gender> getGenderById(String id) {
         return Mono.justOrEmpty(repository.findById(id)
                 .map(genderEntity -> mapper.map(genderEntity, Gender.class)));

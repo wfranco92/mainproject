@@ -34,6 +34,11 @@ public class RouterRest {
                 .andRoute(GET("/api/v1/location/{id}"), handler::listenGetLocationById)
                 .andRoute(GET("/api/v1/location"), handler::listenGetAllLocation)
                 .andRoute(PUT("/api/v1/location/{id}"), handler::listenPUTLocation)
+                .andRoute(GET("/api/v1/statistics"), handler::listenGETStatistics)
+                .andRoute(GET("/api/v1/search"), handler::listenGETSearch)
+                .andRoute(GET("/api/v1/user"), handler::listenGETUser)
+                .andRoute(POST("/api/login"), handler::listenLogin)
+                .andRoute(POST("/api/signup"), handler::listenSignup)
                 .andRoute(RequestPredicates.all(), handler::handleNotFound);
     }
 }
