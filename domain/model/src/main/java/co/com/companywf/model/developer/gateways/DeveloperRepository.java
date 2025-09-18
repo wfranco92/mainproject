@@ -1,0 +1,15 @@
+package co.com.companywf.model.developer.gateways;
+
+import co.com.companywf.model.developer.Developer;
+import co.com.companywf.model.developer.DeveloperRequest;
+import org.springframework.data.domain.Pageable;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
+public interface DeveloperRepository {
+    Mono<Developer> getDeveloperById(String id);
+    Flux<Developer> getAllDeveloper(Pageable pageable);
+    Mono<Developer> saveDeveloper(DeveloperRequest developerRequest);
+    Mono<Developer> updateDeveloper(String id, DeveloperRequest developerRequest);
+
+}

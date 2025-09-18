@@ -11,6 +11,17 @@ spring:
       path: "/h2"
   profiles:
     include: null
+  datasource:
+    url: "jdbc:mysql://localhost:3306/videogame"
+    username: ${userName}
+    password: ${password}
+    driverClassName: "com.mysql.cj.jdbc.Driver"
+  jpa:
+    databasePlatform: "org.hibernate.dialect.MySQL8Dialect"
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
 management:
   endpoints:
     web:
@@ -50,3 +61,4 @@ resilience4j:
         slidingWindowSize: 10
         minimumNumberOfCalls: 10
         waitDurationInOpenState: "10s"
+secretKey: "estaesmillavedeseguridadparaprobarspringsecurityenbase64"
