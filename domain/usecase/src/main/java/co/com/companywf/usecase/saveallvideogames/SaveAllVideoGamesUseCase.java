@@ -11,6 +11,7 @@ import co.com.companywf.model.videogame.VideoGameRequest;
 import co.com.companywf.model.videogame.Videogame;
 import co.com.companywf.model.videogame.gateways.VideogameRepository;
 import co.com.companywf.usecase.AbstractUseCase;
+import co.com.companywf.utils.Parser;
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -37,7 +38,7 @@ public class SaveAllVideoGamesUseCase extends AbstractUseCase<VideoGameRequest> 
                         developerRepository.getDeveloperById(Developer.idFromName(videoGame.getDeveloper().toUpperCase())),
                         locationRepository.getLocationById(Location.idFromName(videoGame.getLocation().toUpperCase())))
                         .map(objects -> VideoGameDB.builder()
-                                .videogameId(UUID.randomUUID().toString())
+                                .id(UUID.randomUUID().toString())
                                 .name(videoGame.getName())
                                 .gender(objects.getT1())
                                 .developer(objects.getT3())
@@ -45,7 +46,8 @@ public class SaveAllVideoGamesUseCase extends AbstractUseCase<VideoGameRequest> 
                                 .status(objects.getT2())
                                 .build()))
                 .collectList()
-                .flatMapMany(videogameRepository::saveAllVideoGames);
+                .flatMapMany(videogameRepository::saveAllVideoGames)
+                .flatMap(Parser::getVideogameFormater);
     }
 
     public boolean validateBody(VideoGameRequest videoGameRequest){

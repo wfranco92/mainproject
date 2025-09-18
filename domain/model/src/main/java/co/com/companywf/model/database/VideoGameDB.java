@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder(toBuilder = true)
 public class VideoGameDB {
-    private String videogameId;
+    private String id;
     private String name;
     private Gender gender;
     private Status status;

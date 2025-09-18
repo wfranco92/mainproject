@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 public class VideoGameEntity {
     @Id
     @Column(name = "videogame_id")
-    private String videogameId;
+    private String id;
 
     private String name;
 

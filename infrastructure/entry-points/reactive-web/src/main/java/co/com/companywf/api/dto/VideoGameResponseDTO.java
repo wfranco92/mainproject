@@ -11,6 +11,11 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @ToString
 public class VideoGameResponseDTO {
+    private String id;
     private String name;
-    private LocalDateTime CreatedAt;
+    private String gender;
+    private String status;
+    private String developer;
+    private String location;
+    private LocalDateTime createdAt;
 }

@@ -12,7 +12,7 @@ import org.springframework.data.repository.query.QueryByExampleExecutor;
 import java.util.List;
 
 public interface JPAVideoGameRepository extends JpaRepository<VideoGameEntity, String>, QueryByExampleExecutor<VideoGameEntity> {
-    @Query("SELECT new co.com.companywf.jpa.dto.VideoGameDescriptionDTO(v.videogameId, v.name, g.name, s.description, d.name, l.name, v.createdAt) " +
+    @Query("SELECT new co.com.companywf.jpa.dto.VideoGameDescriptionDTO(v.id, v.name, g.name, s.description, d.name, l.name, v.createdAt) " +
             "FROM VideoGameEntity v " +
             "JOIN v.gender g " +
             "JOIN v.status s " +
@@ -36,7 +36,7 @@ public interface JPAVideoGameRepository extends JpaRepository<VideoGameEntity, S
             "JOIN location l ON v.location_id = l.location_id group by location", nativeQuery = true)
     List<Object[]> getStatisticsAboutLocation();
 
-    @Query("SELECT new co.com.companywf.jpa.dto.VideoGameDescriptionDTO(v.videogameId, v.name, g.name, s.description, d.name, l.name, v.createdAt) " +
+    @Query("SELECT new co.com.companywf.jpa.dto.VideoGameDescriptionDTO(v.id, v.name, g.name, s.description, d.name, l.name, v.createdAt) " +
             "FROM VideoGameEntity v " +
             "JOIN v.gender g " +
             "JOIN v.status s " +
